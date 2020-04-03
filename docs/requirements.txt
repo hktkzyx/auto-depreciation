@@ -34,7 +34,6 @@ branca==0.3.1
 brewer2mpl==1.4.1
 Brotli==1.0.7
 cachetools==3.1.1
-Cartopy==0.17.0
 certifi==2019.9.11
 cffi==1.12.3
 cftime==1.0.3.4
