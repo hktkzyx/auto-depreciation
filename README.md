@@ -1,1 +1,1 @@
-[See document](docs/index.md)
+[See document](https://auto-depreciation.readthedocs.io/)
