@@ -2,10 +2,10 @@
 site_name: Auto Depreciation Plugin
 site_description: A Beancount plugin for fixed assets depreciation
 site_author: hktkzyx
-site_url: https://auto-depreciation.readthedocs.io/
+site_url: 'https://auto-depreciation.readthedocs.io/'
 
 # Repository
-repo_url: https://github.com/hktkzyx/auto_depreciation
+repo_url: 'https://github.com/hktkzyx/auto_depreciation'
 
 # Configuration
 nav:
