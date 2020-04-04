@@ -1,7 +1,7 @@
 # Project information
 site_name: Auto Depreciation Plugin
-site_description: A Beancount plugin for fixed assets depreciation
-site_author: hktkzyx
+site_description: 'A Beancount plugin for fixed assets depreciation'
+site_author: 'hktkzyx'
 site_url: 'https://auto-depreciation.readthedocs.io/'
 
 # Repository
