@@ -1,1 +1,1 @@
-[See document](https://auto-depreciation.readthedocs.io/)
+[See document](https://hktkzyx.github.io/auto_depreciation/)

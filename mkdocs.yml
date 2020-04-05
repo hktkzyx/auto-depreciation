@@ -1,9 +1,21 @@
+# Project information
 site_name: Auto Depreciation Plugin
+site_description: A Beancount plugin for fixed assets depreciation
+site_author: hktkzyx
+site_url: 'https://auto-depreciation.readthedocs.io/'
+
+# Repository
+repo_name: hktkzyx/auto_depreciation
+repo_url: 'https://github.com/hktkzyx/auto_depreciation'
+
+# Configuration
 nav:
   - Introduction: index.md
   - Depreciation Methods: methods.md
 theme: 
   name: material
+  
+# Extensions
 markdown_extensions:
   - admonition
   - pymdownx.arithmatex
