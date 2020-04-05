@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Many [depreciation methods](https://en.wikipedia.org/wiki/Depreciation) are used in accounting. 
+Many [depreciation methods](https://en.wikipedia.org/wiki/Depreciation) are used in accounting.
 For example, Straight-line, sum-of-years-digit, Diminishing balance method, etc.
 Gernerally, the basic depreciation period in accounting is month.
 That means depreciation expenses of every month are identical if we use straight-line method.
@@ -22,10 +22,9 @@ where $y$ is the present value, $p$ is the original value, $q$ is the residual v
 
 ![linear](https://s1.ax1x.com/2020/04/03/GU3eGn.png)
 
-
-???+ note
+!!! note
         2020-03-31 * "Auto Depreciation [200, 3m]"
-            Assets:Cash                     -600.00 CNY                                   
+            Assets:Cash                     -600.00 CNY
             Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
 
     The syntax above equals
