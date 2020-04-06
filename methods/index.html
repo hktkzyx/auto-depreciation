@@ -352,7 +352,7 @@
                 
                 <h1 id="depreciation-method">Depreciation Method</h1>
 <h2 id="introduction">Introduction</h2>
-<p>Many <a href="https://en.wikipedia.org/wiki/Depreciation">depreciation methods</a> are used in accounting. 
+<p>Many <a href="https://en.wikipedia.org/wiki/Depreciation">depreciation methods</a> are used in accounting.
 For example, Straight-line, sum-of-years-digit, Diminishing balance method, etc.
 Gernerally, the basic depreciation period in accounting is month.
 That means depreciation expenses of every month are identical if we use straight-line method.
@@ -371,32 +371,38 @@ y=-\frac{p-q}{n}x+p
 </div>
 <p>where <span><span class="MathJax_Preview">y</span><script type="math/tex">y</script></span> is the present value, <span><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span> is the original value, <span><span class="MathJax_Preview">q</span><script type="math/tex">q</script></span> is the residual value, <span><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span> is the useful life in days and <span><span class="MathJax_Preview">x</span><script type="math/tex">x</script></span> is the elapsed time in days.</p>
 <p><img alt="linear" src="https://s1.ax1x.com/2020/04/03/GU3eGn.png" /></p>
-<details class="note" open="open"><summary>Note</summary><pre><code>2020-03-31 * "Auto Depreciation [200, 3m]"
-    Assets:Cash                     -600.00 CNY                                   
-    Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-</code></pre>
+<details class="note" open="open"><summary>Note</summary><div class="highlight"><pre><span></span><code>2020-03-31 * &quot;&quot;
+    Assets:Cash                     -600.00 CNY
+    Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, &quot;Nikon&quot;}
+        useful_life: &quot;3m&quot;
+        residual_value: 200
+</code></pre></div>
+
 <p>The syntax above equals</p>
-<pre><code>2020-03-31 * "Auto Depreciation [200, 3m]"
+<div class="highlight"><pre><span></span><code>2020-03-31 * &quot;&quot;
     Assets:Cash                     -600.00 CNY                                   
-    Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+    Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, &quot;Nikon&quot;}
+        useful_life: &quot;3m&quot;
+        residual_value: 200
 
-2020-04-30 * "Auto Depreciation:Nikon"
-    Assets:Wealth:Fixed-Assets-CNY            -1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-    Assets:Wealth:Fixed-Assets-CNY             1 LENS {468 CNY, 2020-04-30, "Nikon"}   
+2020-04-30 * &quot;auto_depreciation:Nikon&quot;
+    Assets:Wealth:Fixed-Assets-CNY            -1 LENS {600.00 CNY, 2020-03-31, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets-CNY             1 LENS {468 CNY, 2020-04-30, &quot;Nikon&quot;}   
+    Expenses:Property-Expenses:Depreciation  132 CNY                                   
+
+2020-05-31 * &quot;auto_depreciation:Nikon&quot;
+    Assets:Wealth:Fixed-Assets-CNY            -1 LENS {468 CNY, 2020-04-30, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets-CNY             1 LENS {332 CNY, 2020-05-31, &quot;Nikon&quot;}
+    Expenses:Property-Expenses:Depreciation  136 CNY                                
+
+2020-06-30 * &quot;auto_depreciation:Nikon&quot;
+    Assets:Wealth:Fixed-Assets-CNY            -1 LENS {332 CNY, 2020-05-31, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets-CNY             1 LENS {200 CNY, 2020-06-30, &quot;Nikon&quot;}
     Expenses:Property-Expenses:Depreciation  132 CNY
+</code></pre></div>
 
-2020-05-31 * "Auto Depreciation:Nikon"
-    Assets:Wealth:Fixed-Assets-CNY            -1 LENS {468 CNY, 2020-04-30, "Nikon"}
-    Assets:Wealth:Fixed-Assets-CNY             1 LENS {332 CNY, 2020-05-31, "Nikon"}
-    Expenses:Property-Expenses:Depreciation  136 CNY
-
-2020-06-30 * "Auto Depreciation:Nikon"
-    Assets:Wealth:Fixed-Assets-CNY            -1 LENS {332 CNY, 2020-05-31, "Nikon"}
-    Assets:Wealth:Fixed-Assets-CNY             1 LENS {200 CNY, 2020-06-30, "Nikon"}
-    Expenses:Property-Expenses:Depreciation  132 CNY
-</code></pre>
 <p>Here we can see, the depreciation expenses in May is a little bit greater than that in April and June.
-That's because the present value is a function of useful life in days.</p>
+That's because the present value is a function of useful life in days instead of in months.</p>
 </details>
 <h2 id="parabola">Parabola</h2>
 <p>Parabola method is the default method and it is the continuous form of sum-of-years-digit method.
