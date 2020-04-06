@@ -39,6 +39,9 @@ The residual value is still 1,000 CNY.
 
 He can use this plugin like this:
 
+!!! example
+
+    ```
     option "insert_pythonpath" "True"
     plugin "auto_depreciation"
 
@@ -46,36 +49,69 @@ He can use this plugin like this:
         name: "cars"
         assets-class: "fixed assets"
     
-    2020-03-31 * "Auto Depreciation [1000, 10y]"
+    2020-03-31 * ""
         Assets:Cash                     -100000.00 CNY
         Assets:Wealth:Fixed-Assets-CNY           1 CARS {100000.00 CNY, "BMW"}
+            useful_life: "10y"
+            residual_value: 1000
+    ```
 
-`[1000, 10y]` in the narration represent residual value and useful life.
-`y` represent *years* while `m` represent *months*.
+where we use metadata attached in the posting to pass residual value and useful life to plugin.
+
+`useful_life` is the compulsory item and `y` represent *years* while `m` represent *months*.
+
+`residual_value` is optional and by default 0.
 
 ???+ example
 
-        2020-03-31 * "[200, 3m]"
-            Assets:Cash              -600.00 CNY
-            Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, "Nikon"}
+    ```
+    2020-03-31 * "Example"
+        Assets:Cash              -600.00 CNY
+        Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, "Nikon"}
+            useful_life: "3m"
+            residual_value: 200
+    ```
 
     The code above is equal to
 
-        2020-03-31 * "[200, 3m]"
-            Assets:Cash                     -600.00 CNY                                   
-            Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+    ```
+    2020-03-31 * "Example"
+        Assets:Cash                     -600.00 CNY                                   
+        Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+            useful_life: "3m"
+            residual_value: 200
 
-        2020-04-30 * "Auto Depreciation:Nikon"
-            Assets:Wealth:Fixed-Assets-CNY              -1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-            Assets:Wealth:Fixed-Assets-CNY               1 LENS {380 CNY, 2020-04-30, "Nikon"}   
-            Expenses:Property-Expenses:Depreciation    220 CNY                                   
+    2020-04-30 * "Example-auto_depreciation:Nikon"
+        Assets:Wealth:Fixed-Assets-CNY              -1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+        Assets:Wealth:Fixed-Assets-CNY               1 LENS {380 CNY, 2020-04-30, "Nikon"}   
+        Expenses:Property-Expenses:Depreciation    220 CNY                                   
 
-        2020-05-31 * "Auto Depreciation:Nikon"
-            Assets:Wealth:Fixed-Assets-CNY              -1 LENS {380 CNY, 2020-04-30, "Nikon"}
-            Assets:Wealth:Fixed-Assets-CNY               1 LENS {243 CNY, 2020-05-31, "Nikon"}
-            Expenses:Property-Expenses:Depreciation    137 CNY                                
+    2020-05-31 * "Example-auto_depreciation:Nikon"
+        Assets:Wealth:Fixed-Assets-CNY              -1 LENS {380 CNY, 2020-04-30, "Nikon"}
+        Assets:Wealth:Fixed-Assets-CNY               1 LENS {243 CNY, 2020-05-31, "Nikon"}
+        Expenses:Property-Expenses:Depreciation    137 CNY                                
 
-        2020-06-30 * "Auto Depreciation:Nikon"
-            Assets:Wealth:Fixed-Assets-CNY              -1 LENS {243 CNY, 2020-05-31, "Nikon"}
-            Assets:Wealth:Fixed-Assets-CNY               1 LENS {200 CNY, 2020-06-30, "Nikon"}
-            Expenses:Property-Expenses:Depreciation     43 CNY                                
+    2020-06-30 * "Example-auto_depreciation:Nikon"
+        Assets:Wealth:Fixed-Assets-CNY              -1 LENS {243 CNY, 2020-05-31, "Nikon"}
+        Assets:Wealth:Fixed-Assets-CNY               1 LENS {200 CNY, 2020-06-30, "Nikon"}
+        Expenses:Property-Expenses:Depreciation     43 CNY
+    ```                       
+
+If the amount of fixed assets is greater than 1, all will be depreciated like this:
+
+???+ example
+
+    ```
+    2020-03-31 * "Example"
+        Assets:Cash                    -1200.00 CNY
+        Assets:Wealth:Fixed-Assets-CNY        2 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+            useful_life: "3m"
+            residual_value: 200
+
+    2020-04-30 * "Example-auto_depreciation:Nikon"
+        Assets:Wealth:Fixed-Assets-CNY              -2 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+        Assets:Wealth:Fixed-Assets-CNY               2 LENS {380 CNY, 2020-04-30, "Nikon"}   
+        Expenses:Property-Expenses:Depreciation    440 CNY
+
+    ...
+    ```

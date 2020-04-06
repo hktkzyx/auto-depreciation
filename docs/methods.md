@@ -22,34 +22,43 @@ where $y$ is the present value, $p$ is the original value, $q$ is the residual v
 
 ![linear](https://s1.ax1x.com/2020/04/03/GU3eGn.png)
 
-!!! note
-        2020-03-31 * "Auto Depreciation [200, 3m]"
-            Assets:Cash                     -600.00 CNY
-            Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+???+ note
+
+    ```
+    2020-03-31 * ""
+        Assets:Cash                     -600.00 CNY
+        Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+            useful_life: "3m"
+            residual_value: 200
+    ```
 
     The syntax above equals
 
-        2020-03-31 * "Auto Depreciation [200, 3m]"
-            Assets:Cash                     -600.00 CNY                                   
-            Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+    ```
+    2020-03-31 * ""
+        Assets:Cash                     -600.00 CNY                                   
+        Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+            useful_life: "3m"
+            residual_value: 200
 
-        2020-04-30 * "Auto Depreciation:Nikon"
-            Assets:Wealth:Fixed-Assets-CNY            -1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-            Assets:Wealth:Fixed-Assets-CNY             1 LENS {468 CNY, 2020-04-30, "Nikon"}   
-            Expenses:Property-Expenses:Depreciation  132 CNY                                   
+    2020-04-30 * "auto_depreciation:Nikon"
+        Assets:Wealth:Fixed-Assets-CNY            -1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
+        Assets:Wealth:Fixed-Assets-CNY             1 LENS {468 CNY, 2020-04-30, "Nikon"}   
+        Expenses:Property-Expenses:Depreciation  132 CNY                                   
 
-        2020-05-31 * "Auto Depreciation:Nikon"
-            Assets:Wealth:Fixed-Assets-CNY            -1 LENS {468 CNY, 2020-04-30, "Nikon"}
-            Assets:Wealth:Fixed-Assets-CNY             1 LENS {332 CNY, 2020-05-31, "Nikon"}
-            Expenses:Property-Expenses:Depreciation  136 CNY                                
+    2020-05-31 * "auto_depreciation:Nikon"
+        Assets:Wealth:Fixed-Assets-CNY            -1 LENS {468 CNY, 2020-04-30, "Nikon"}
+        Assets:Wealth:Fixed-Assets-CNY             1 LENS {332 CNY, 2020-05-31, "Nikon"}
+        Expenses:Property-Expenses:Depreciation  136 CNY                                
 
-        2020-06-30 * "Auto Depreciation:Nikon"
-            Assets:Wealth:Fixed-Assets-CNY            -1 LENS {332 CNY, 2020-05-31, "Nikon"}
-            Assets:Wealth:Fixed-Assets-CNY             1 LENS {200 CNY, 2020-06-30, "Nikon"}
-            Expenses:Property-Expenses:Depreciation  132 CNY  
+    2020-06-30 * "auto_depreciation:Nikon"
+        Assets:Wealth:Fixed-Assets-CNY            -1 LENS {332 CNY, 2020-05-31, "Nikon"}
+        Assets:Wealth:Fixed-Assets-CNY             1 LENS {200 CNY, 2020-06-30, "Nikon"}
+        Expenses:Property-Expenses:Depreciation  132 CNY
+    ```
 
     Here we can see, the depreciation expenses in May is a little bit greater than that in April and June.
-    That's because the present value is a function of useful life in days.
+    That's because the present value is a function of useful life in days instead of in months.
 
 ## Parabola
 
