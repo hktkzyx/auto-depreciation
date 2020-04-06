@@ -61,39 +61,27 @@ class TestExampleAutoDepreciation(cmptest.TestCase):
         2020-04-30 * "Test-auto_depreciation:Nikon"
           Assets:Fixed-Assets   -2 LENS {600.00 CNY, 2020-03-31, "Nikon"}
           Assets:Fixed-Assets    2 LENS {380 CNY, 2020-04-30, "Nikon"}   
-          Expenses:Depreciation    440 CNY                                   
-            useful_life: "3m"
-            residual_value: 200
+          Expenses:Depreciation    440 CNY
 
         2020-04-30 * "Test-auto_depreciation"
           Assets:Fixed-Assets            -1 LENS {800.00 CNY, 2020-03-31}
-            useful_life: "2m"
-          Assets:Fixed-Assets             1 LENS {207 CNY, 2020-04-30}   
-            useful_life: "2m"
-          Expenses:Depreciation  593 CNY                          
-            useful_life: "2m"
+          Assets:Fixed-Assets             1 LENS {207 CNY, 2020-04-30}
+          Expenses:Depreciation  593 CNY
 
         2020-05-31 * "Test-auto_depreciation:Nikon"
           Assets:Fixed-Assets   -2 LENS {380 CNY, 2020-04-30, "Nikon"}
           Assets:Fixed-Assets    2 LENS {243 CNY, 2020-05-31, "Nikon"}
-          Expenses:Depreciation    274 CNY                                
-            useful_life: "3m"
-            residual_value: 200
+          Expenses:Depreciation    274 CNY
 
         2020-05-31 * "Test-auto_depreciation"
           Assets:Fixed-Assets            -1 LENS {207 CNY, 2020-04-30}
-            useful_life: "2m"
-          Assets:Fixed-Assets             1 LENS {0 CNY, 2020-05-31}  
-            useful_life: "2m"
-          Expenses:Depreciation  207 CNY                       
-            useful_life: "2m"
+          Assets:Fixed-Assets             1 LENS {0 CNY, 2020-05-31}
+          Expenses:Depreciation  207 CNY
         
         2020-06-30 * "Test-auto_depreciation:Nikon"
           Assets:Fixed-Assets  -2 LENS {243 CNY, 2020-05-31, "Nikon"}
           Assets:Fixed-Assets   2 LENS {200 CNY, 2020-06-30, "Nikon"}
-          Expenses:Depreciation    86 CNY                                
-            useful_life: "3m"
-            residual_value: 200
+          Expenses:Depreciation    86 CNY
 
         """
         self.assertEqualEntries(expected_entries, entries)

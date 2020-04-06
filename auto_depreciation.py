@@ -203,7 +203,13 @@ def _posting_to_sell(pos):
     """
     units = convert.get_units(pos)
     new_units = amount.mul(units, Decimal(-1))
-    return pos._replace(units=new_units)
+    new_meta = pos.meta.copy()
+    try:
+        del new_meta['useful_life']
+        del new_meta['residual_value']
+    except KeyError:
+        pass
+    return pos._replace(units=new_units, meta=new_meta)
 
 
 def _posting_to_buy(pos, date, value):
@@ -220,7 +226,13 @@ def _posting_to_buy(pos, date, value):
     """
     cost = pos.cost
     new_cost = cost._replace(date=date, number=Decimal(value))
-    return pos._replace(cost=new_cost)
+    new_meta = pos.meta.copy()
+    try:
+        del new_meta['useful_life']
+        del new_meta['residual_value']
+    except KeyError:
+        pass
+    return pos._replace(cost=new_cost, meta=new_meta)
 
 
 def _posting_to_expense(pos, account, value, currency):
@@ -238,7 +250,13 @@ def _posting_to_expense(pos, account, value, currency):
         Depreciation currency.
     """
     units = amount.Amount(pos.units.number * Decimal(value), currency)
-    return pos._replace(account=account, units=units, cost=None)
+    new_meta = pos.meta.copy()
+    try:
+        del new_meta['useful_life']
+        del new_meta['residual_value']
+    except KeyError:
+        pass
+    return pos._replace(account=account, units=units, cost=None, meta=new_meta)
 
 
 def _auto_entry(entry, date, label, *args):
@@ -256,9 +274,10 @@ def _auto_entry(entry, date, label, *args):
         Posting instances in this entry.
     """
     if label:
-        new_narration = ''.join([entry.narration, '-auto_depreciation:', label])
+        new_narration = ''.join(
+            [entry.narration, '-auto_depreciation:', label])
     else:
-        new_narration=entry.narration+'-auto_depreciation'
+        new_narration = entry.narration + '-auto_depreciation'
     return entry._replace(date=date, narration=new_narration,
                           postings=list(args))
 
