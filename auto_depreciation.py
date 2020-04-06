@@ -273,11 +273,16 @@ def _auto_entry(entry, date, label, *args):
     *args
         Posting instances in this entry.
     """
-    if label:
+    narration=entry.narration
+    if narration and label:
         new_narration = ''.join(
             [entry.narration, '-auto_depreciation:', label])
-    else:
+    elif narration:
         new_narration = entry.narration + '-auto_depreciation'
+    elif label:
+        new_narration = 'auto_depreciation:'+label
+    else:
+        new_narration = 'auto_depreciation'
     return entry._replace(date=date, narration=new_narration,
                           postings=list(args))
 
