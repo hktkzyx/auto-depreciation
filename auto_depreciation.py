@@ -4,7 +4,7 @@ from collections import namedtuple
 
 from beancount import loader
 from beancount.core import account, amount, convert, data
-from beancount.core.number import ONE, Decimal
+from beancount.core.number import Decimal
 from beancount.parser import printer
 from dateutil.relativedelta import relativedelta
 
@@ -41,6 +41,7 @@ def auto_depreciation(entries, options_map, config='{}'):
     DEFAULT_ASSETS_ACCOUNT = 'Assets:Wealth:Fixed-Assets-CNY'
     DEFAULT_EXPENSES_ACCOUNT = 'Expenses:Property-Expenses:Depreciation'
     DEFAULT_METHOD = 'parabola'
+    DEFAULT_RESIDUAL_VALUE = 0.0
     config_dict = eval(config)
     try:
         assets_account = config_dict['assets']
@@ -59,25 +60,25 @@ def auto_depreciation(entries, options_map, config='{}'):
     except KeyError:
         method = DEFAULT_METHOD
 
-    regtex_narration = r'^.*\[([0-9]*[.]?[0-9]+)\s*[\s,]\s*([0-9]+)([my])\]'
     depreciation_entries = []
     for entry in entries:
         if isinstance(entry, data.Transaction):
-            m = re.search(regtex_narration, entry.narration, re.IGNORECASE)
-        else:
-            m = False
-        if m:
             for posting in entry.postings:
-                if (posting.cost and posting.units.number == ONE
+                if ('useful_life' in posting.meta
                         and posting.account == assets_account):
                     cost = posting.cost
                     currency = cost.currency
                     original_value = float(cost.number)
-                    end_value = float(m.group(1))
+                    try:
+                        end_value = float(posting.meta['residual_value'])
+                    except KeyError:
+                        end_value = DEFAULT_RESIDUAL_VALUE
                     label = cost.label
                     buy_date = cost.date
-                    months_or_years = str.lower(m.group(3))
-                    months = int(m.group(2))
+                    m = re.match(r'([0-9]+)([my])',
+                                 str.lower(posting.meta['useful_life']))
+                    months_or_years = m.group(2)
+                    months = int(m.group(1))
                     if months_or_years == 'y':
                         months = 12 * months
                     dates_list, current_values, depreciation_values \
@@ -94,14 +95,6 @@ def auto_depreciation(entries, options_map, config='{}'):
                         new_pos = [pos_sell, pos_buy, pos_expense]
                         depreciation_entries.append(
                             _auto_entry(entry, date, label, *new_pos))
-                    # Only the first one fixed assets posting is processed.
-                    # TODO(hktkzyx@qq.com): Allow multi-postings processed.
-                    break
-            else:
-                msg = ('Fixed assets not found! '
-                       'Make sure unit of fixed assets is 1')
-                error = AutoDepreciationError(entry.meta, msg, entry)
-                errors.append(error)
     new_entries = entries + depreciation_entries
     new_entries.sort(key=data.entry_sortkey)
     return new_entries, errors
@@ -244,7 +237,7 @@ def _posting_to_expense(pos, account, value, currency):
     currency : str
         Depreciation currency.
     """
-    units = amount.Amount(Decimal(value), currency)
+    units = amount.Amount(pos.units.number * Decimal(value), currency)
     return pos._replace(account=account, units=units, cost=None)
 
 
@@ -257,12 +250,15 @@ def _auto_entry(entry, date, label, *args):
         The entry of buying fixed assets.
     date : datetime.date
         Transaction date.
-    label : str
+    label : str, None
         Label in inventory.
     *args
         Posting instances in this entry.
     """
-    new_narration = ''.join(['Auto Depreciation:', label])
+    if label:
+        new_narration = ''.join([entry.narration, '-auto_depreciation:', label])
+    else:
+        new_narration=entry.narration+'-auto_depreciation'
     return entry._replace(date=date, narration=new_narration,
                           postings=list(args))
 
