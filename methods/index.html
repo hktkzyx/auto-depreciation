@@ -373,7 +373,7 @@ y=-\frac{p-q}{n}x+p
 <p><img alt="linear" src="https://s1.ax1x.com/2020/04/03/GU3eGn.png" /></p>
 <details class="note" open="open"><summary>Note</summary><div class="highlight"><pre><span></span><code>2020-03-31 * &quot;&quot;
     Assets:Cash                     -600.00 CNY
-    Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets        1 LENS {600.00 CNY, 2020-03-31, &quot;Nikon&quot;}
         useful_life: &quot;3m&quot;
         residual_value: 200
 </code></pre></div>
@@ -381,23 +381,23 @@ y=-\frac{p-q}{n}x+p
 <p>The syntax above equals</p>
 <div class="highlight"><pre><span></span><code>2020-03-31 * &quot;&quot;
     Assets:Cash                     -600.00 CNY                                   
-    Assets:Wealth:Fixed-Assets-CNY        1 LENS {600.00 CNY, 2020-03-31, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets        1 LENS {600.00 CNY, 2020-03-31, &quot;Nikon&quot;}
         useful_life: &quot;3m&quot;
         residual_value: 200
 
 2020-04-30 * &quot;auto_depreciation:Nikon&quot;
-    Assets:Wealth:Fixed-Assets-CNY            -1 LENS {600.00 CNY, 2020-03-31, &quot;Nikon&quot;}
-    Assets:Wealth:Fixed-Assets-CNY             1 LENS {468 CNY, 2020-04-30, &quot;Nikon&quot;}   
+    Assets:Wealth:Fixed-Assets            -1 LENS {600.00 CNY, 2020-03-31, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets             1 LENS {468 CNY, 2020-04-30, &quot;Nikon&quot;}   
     Expenses:Property-Expenses:Depreciation  132 CNY                                   
 
 2020-05-31 * &quot;auto_depreciation:Nikon&quot;
-    Assets:Wealth:Fixed-Assets-CNY            -1 LENS {468 CNY, 2020-04-30, &quot;Nikon&quot;}
-    Assets:Wealth:Fixed-Assets-CNY             1 LENS {332 CNY, 2020-05-31, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets            -1 LENS {468 CNY, 2020-04-30, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets             1 LENS {332 CNY, 2020-05-31, &quot;Nikon&quot;}
     Expenses:Property-Expenses:Depreciation  136 CNY                                
 
 2020-06-30 * &quot;auto_depreciation:Nikon&quot;
-    Assets:Wealth:Fixed-Assets-CNY            -1 LENS {332 CNY, 2020-05-31, &quot;Nikon&quot;}
-    Assets:Wealth:Fixed-Assets-CNY             1 LENS {200 CNY, 2020-06-30, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets            -1 LENS {332 CNY, 2020-05-31, &quot;Nikon&quot;}
+    Assets:Wealth:Fixed-Assets             1 LENS {200 CNY, 2020-06-30, &quot;Nikon&quot;}
     Expenses:Property-Expenses:Depreciation  132 CNY
 </code></pre></div>
 
