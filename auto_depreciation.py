@@ -15,7 +15,7 @@ AutoDepreciationError = namedtuple('AutoDepreciationError',
                                    'source message entry')
 
 
-def auto_depreciation(entries, options_map, config='{}'):
+def auto_depreciation(entries, options_map, config=None):
     """Depreciate fixed assets automatically.
 
     Please refer to `Beancount Scripting & Plugins <http://furius.ca/beancount/doc/scripting>`_
@@ -38,11 +38,14 @@ def auto_depreciation(entries, options_map, config='{}'):
         Error information.
     """
     errors = []
-    DEFAULT_ASSETS_ACCOUNT = 'Assets:Wealth:Fixed-Assets-CNY'
+    DEFAULT_ASSETS_ACCOUNT = 'Assets:Wealth:Fixed-Assets'
     DEFAULT_EXPENSES_ACCOUNT = 'Expenses:Property-Expenses:Depreciation'
     DEFAULT_METHOD = 'parabola'
     DEFAULT_RESIDUAL_VALUE = 0.0
-    config_dict = eval(config)
+    try:
+        config_dict = eval(config)
+    except (TypeError, SyntaxError):
+        config_dict = {}
     try:
         assets_account = config_dict['assets']
     except KeyError:
@@ -64,7 +67,7 @@ def auto_depreciation(entries, options_map, config='{}'):
     for entry in entries:
         if isinstance(entry, data.Transaction):
             for posting in entry.postings:
-                if ('useful_life' in posting.meta
+                if (posting.meta and 'useful_life' in posting.meta
                         and posting.account == assets_account):
                     cost = posting.cost
                     currency = cost.currency
@@ -273,14 +276,14 @@ def _auto_entry(entry, date, label, *args):
     *args
         Posting instances in this entry.
     """
-    narration=entry.narration
+    narration = entry.narration
     if narration and label:
         new_narration = ''.join(
             [entry.narration, '-auto_depreciation:', label])
     elif narration:
         new_narration = entry.narration + '-auto_depreciation'
     elif label:
-        new_narration = 'auto_depreciation:'+label
+        new_narration = 'auto_depreciation:' + label
     else:
         new_narration = 'auto_depreciation'
     return entry._replace(date=date, narration=new_narration,
