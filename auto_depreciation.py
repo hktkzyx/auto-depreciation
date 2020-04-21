@@ -116,6 +116,8 @@ def depreciation_list(start_value, end_value, buy_date, months, method):
         The date you buy the assets.
     months : int
         Useful life in months.
+    method : str
+        Depreciation method.
     
     Returns
     -------
