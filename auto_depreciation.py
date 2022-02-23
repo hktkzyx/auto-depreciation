@@ -41,7 +41,7 @@ def auto_depreciation(entries, options_map, config=None):
     DEFAULT_ASSETS_ACCOUNT = 'Assets:Wealth:Fixed-Assets'
     DEFAULT_EXPENSES_ACCOUNT = 'Expenses:Property-Expenses:Depreciation'
     DEFAULT_METHOD = 'parabola'
-    DEFAULT_RESIDUAL_VALUE = 0.0
+    DEFAULT_RESIDUAL_VALUE = Decimal(0)
     try:
         config_dict = eval(config)
     except (TypeError, SyntaxError):
@@ -71,9 +71,9 @@ def auto_depreciation(entries, options_map, config=None):
                         and posting.account == assets_account):
                     cost = posting.cost
                     currency = cost.currency
-                    original_value = float(cost.number)
+                    original_value = cost.number
                     try:
-                        end_value = float(posting.meta['residual_value'])
+                        end_value = posting.meta['residual_value']
                     except KeyError:
                         end_value = DEFAULT_RESIDUAL_VALUE
                     label = cost.label
@@ -108,9 +108,9 @@ def depreciation_list(start_value, end_value, buy_date, months, method):
     
     Parameters
     ----------
-    start_value : float
+    start_value : Decimal
         Original value.
-    end_value : float
+    end_value : Decimal
         residual value.
     buy_date : datetime.date
         The date you buy the assets.
@@ -139,7 +139,7 @@ def depreciation_list(start_value, end_value, buy_date, months, method):
     days_list = [(x - buy_date).days for x in dates_list]
     depreciation_days = days_list[-1]
     current_values = [
-        get_current_value(x, start_value, end_value, depreciation_days)
+        get_current_value(x, float(start_value), float(end_value), depreciation_days)
         for x in days_list
     ]
     depreciation_values = []
