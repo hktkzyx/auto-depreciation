@@ -6,6 +6,7 @@ from beancount.parser import cmptest
 
 
 class TestExampleAutoDepreciation(cmptest.TestCase):
+
     def test_auto_depreciation(self):
         sample = """
         option "insert_pythonpath" "True"
