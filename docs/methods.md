@@ -20,9 +20,12 @@ $$
 
 where $y$ is the present value, $p$ is the original value, $q$ is the residual value, $n$ is the useful life in days and $x$ is the elapsed time in days.
 
-![linear](https://s1.ax1x.com/2020/04/03/GU3eGn.png)
+<figure markdown>
+  ![linear](./images/linear.png)
+  <figcaption>Present value divided by original value of <b>linear</b> method</figcaption>
+</figure>
 
-???+ note
+!!! note
 
     ```
     2020-03-31 * ""
@@ -70,4 +73,7 @@ $$
 y=\frac{p-q}{n^2}(x-n)^2+q
 $$
 
-![parabola](https://s1.ax1x.com/2020/04/03/GU3E5j.png)
+<figure markdown>
+  ![parabola](./images/parabola.png)
+  <figcaption>Present value divided by original value of <b>parabola</b> method</figcaption>
+</figure>
