@@ -9,8 +9,7 @@ class TestExampleAutoDepreciation(cmptest.TestCase):
 
     def test_auto_depreciation(self):
         sample = """
-        option "insert_pythonpath" "True"
-        plugin "auto_depreciation" "{
+        plugin "auto_depreciation.depreciation" "{
           'assets':'Assets:Fixed-Assets',
           'expenses':'Expenses:Depreciation',
         }"
@@ -90,8 +89,7 @@ class TestExampleAutoDepreciation(cmptest.TestCase):
 
     def test_rounding_errors(self):
         sample = """
-        option "insert_pythonpath" "True"
-        plugin "auto_depreciation" "{
+        plugin "auto_depreciation.depreciation" "{
           'assets':'Assets:Fixed-Assets',
           'expenses':'Expenses:Depreciation',
         }"
