@@ -18,6 +18,7 @@ isort = {version = "^5.10.1", optional = true}
 [tool.poetry.dev-dependencies]
 mkdocs = "^1.2.3"
 mkdocs-material = "^8.2.1"
+mike = "^1.1.2"
 
 [tool.poetry.extras]
 dev-tools = ["flake8", "yapf", "commitizen", "pre-commit", "isort"]
