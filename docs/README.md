@@ -62,6 +62,10 @@ where we use metadata attached in the posting to pass residual value and useful 
 
 `residual_value` is optional and by default 0.
 
+!!! note
+
+    `residual_value` is rounded to `int`.
+
 !!! example
 
     ```
@@ -115,3 +119,16 @@ If the amount of fixed assets is greater than 1, all will be depreciated like th
 
     ...
     ```
+
+## Contributing
+
+It's my pleasure that you can contribute your codes.
+To ensure the code quality, please follow the rules below:
+
+- Use [pre-commit](https://github.com/commitizen-tools/commitizen) and [commitizen](https://github.com/commitizen-tools/commitizen) to submit commits.
+- Use [flake8](https://github.com/PyCQA/flake8), [yapf](https://github.com/google/yapf), and [isort](https://github.com/PyCQA/isort) to format your codes.
+- Follow [gitflow](https://github.com/petervanderdoes/gitflow-avh) branch manage strategies.
+
+Fork this repository, merge to `develop` branch, then PR.
+
+*[PR]: Pull Request
