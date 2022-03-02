@@ -1,9 +1,11 @@
-"""Fixed assets depreciation plugin for beancount."""
-import re
 from collections import namedtuple
+import re
 
 from beancount import loader
-from beancount.core import account, amount, convert, data
+from beancount.core import account
+from beancount.core import amount
+from beancount.core import convert
+from beancount.core import data
 from beancount.core.number import Decimal
 from beancount.parser import printer
 from dateutil.relativedelta import relativedelta
@@ -20,7 +22,7 @@ def auto_depreciation(entries, options_map, config=None):
 
     Please refer to `Beancount Scripting & Plugins <http://furius.ca/beancount/doc/scripting>`_
     for more details.
-    
+
     Parameters
     ----------
     entries
@@ -84,16 +86,20 @@ def auto_depreciation(entries, options_map, config=None):
                     months = int(m.group(1))
                     if months_or_years == 'y':
                         months = 12 * months
-                    dates_list, current_values, depreciation_values \
-                        = depreciation_list(original_value, end_value, buy_date, months, method)
+                    (dates_list, current_values,
+                     depreciation_values) = depreciation_list(
+                         original_value, end_value, buy_date, months, method)
                     latest_pos = posting
                     for i, date in enumerate(dates_list):
                         pos_sell = _posting_to_sell(latest_pos)
-                        pos_buy = _posting_to_buy(latest_pos, date,
+                        pos_buy = _posting_to_buy(latest_pos,
+                                                  date,
                                                   current_values[i])
                         pos_expense = _posting_to_expense(
-                            latest_pos, expenses_account,
-                            depreciation_values[i], currency)
+                            latest_pos,
+                            expenses_account,
+                            depreciation_values[i],
+                            currency)
                         latest_pos = pos_buy
                         new_pos = [pos_sell, pos_buy, pos_expense]
                         depreciation_entries.append(
@@ -118,7 +124,7 @@ def depreciation_list(start_value, end_value, buy_date, months, method):
         Useful life in months.
     method : str
         Depreciation method.
-    
+
     Returns
     -------
     dates_list : List[datetime.date]
@@ -139,8 +145,10 @@ def depreciation_list(start_value, end_value, buy_date, months, method):
     days_list = [(x - buy_date).days for x in dates_list]
     depreciation_days = days_list[-1]
     current_values = [
-        get_current_value(x, float(start_value), float(end_value), depreciation_days)
-        for x in days_list
+        get_current_value(x,
+                          float(start_value),
+                          float(end_value),
+                          depreciation_days) for x in days_list
     ]
     depreciation_values = []
     for i, value in enumerate(current_values):
@@ -288,7 +296,8 @@ def _auto_entry(entry, date, label, *args):
         new_narration = 'auto_depreciation:' + label
     else:
         new_narration = 'auto_depreciation'
-    return entry._replace(date=date, narration=new_narration,
+    return entry._replace(date=date,
+                          narration=new_narration,
                           postings=list(args))
 
 

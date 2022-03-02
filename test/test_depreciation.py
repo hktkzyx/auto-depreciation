@@ -1,15 +1,15 @@
 import textwrap
-
 import unittest
+
 from beancount import loader
 from beancount.parser import cmptest
 
 
 class TestExampleAutoDepreciation(cmptest.TestCase):
+
     def test_auto_depreciation(self):
         sample = """
-        option "insert_pythonpath" "True"
-        plugin "auto_depreciation" "{
+        plugin "auto_depreciation.depreciation" "{
           'assets':'Assets:Fixed-Assets',
           'expenses':'Expenses:Depreciation',
         }"
@@ -46,12 +46,12 @@ class TestExampleAutoDepreciation(cmptest.TestCase):
           assets-class: "fixed assets"
           name: "Camera lens"
 
-        2020-03-01 * 
+        2020-03-01 *
           Assets:Cash               2000.00 CNY
           Equity:Opening-Balances  -2000.00 CNY
 
         2020-03-31 * "Test"
-          Assets:Cash              -2000.00 CNY                                   
+          Assets:Cash              -2000.00 CNY
           Assets:Fixed-Assets        2 LENS {600.00 CNY, 2020-03-31, "Nikon"}
             useful_life: "3m"
             residual_value: 200
@@ -60,7 +60,7 @@ class TestExampleAutoDepreciation(cmptest.TestCase):
 
         2020-04-30 * "Test-auto_depreciation:Nikon"
           Assets:Fixed-Assets   -2 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-          Assets:Fixed-Assets    2 LENS {380 CNY, 2020-04-30, "Nikon"}   
+          Assets:Fixed-Assets    2 LENS {380 CNY, 2020-04-30, "Nikon"}
           Expenses:Depreciation    440.00 CNY
 
         2020-04-30 * "Test-auto_depreciation"
@@ -89,8 +89,7 @@ class TestExampleAutoDepreciation(cmptest.TestCase):
 
     def test_rounding_errors(self):
         sample = """
-        option "insert_pythonpath" "True"
-        plugin "auto_depreciation" "{
+        plugin "auto_depreciation.depreciation" "{
           'assets':'Assets:Fixed-Assets',
           'expenses':'Expenses:Depreciation',
         }"
@@ -125,7 +124,7 @@ class TestExampleAutoDepreciation(cmptest.TestCase):
           assets-class: "fixed assets"
           name: "Camera lens"
 
-        2020-03-01 * 
+        2020-03-01 *
           Assets:Cash               2999.85 CNY
           Equity:Opening-Balances  -2999.85 CNY
 

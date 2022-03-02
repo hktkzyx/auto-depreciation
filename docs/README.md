@@ -1,6 +1,7 @@
-# Welcome to Auto Depreciation Plugin
+# Auto Depreciation Plugin
 
-`auto_depreciation` is a beancount plugin to deal with fixed assets depreciation.
+[Auto_depreciation](https://hktkzyx.github.io/auto-depreciation/)
+is a [beancount](https://github.com/beancount/beancount) plugin to deal with fixed assets depreciation.
 In our daily life, we may buy some valuable goods like cars, phones, furniture, etc.
 All these transactions are preferred to be documented as transfer instead of expenses,
 otherwise, you cannot evaluate your daily expenses properly.
@@ -8,11 +9,9 @@ This plugin can generate depreciation transactions automatically.
 
 ## Installing
 
-Copy the file to your PYTHONPATH.
-You can also copy the plugin to the folder which contains the beancount file and add the following lines into your beancount file:
-
-    option "insert_pythonpath" "True"
-    plugin "auto_depreciation"
+```bash
+pip install auto-depreciation
+```
 
 ## Configuration
 
@@ -24,15 +23,17 @@ The parameters passed to the plugin are:
 
 Parameter default values are as follows:
 
-    plugin "auto_depreciation" "{
-        'assets':'Assets:Wealth:Fixed-Assets',
-        'expenses':'Expenses:Property-Expenses:Depreciation',
-        'method':'parabola',
-    }"
+```
+plugin "auto_depreciation.depreciation" "{
+    'assets':'Assets:Wealth:Fixed-Assets',
+    'expenses':'Expenses:Property-Expenses:Depreciation',
+    'method':'parabola',
+}"
+```
 
-## How to use
+## Usage
 
-Xiaoming is a youg man. One day he bought a car and paid in cash.
+Xiaoming is a young man. One day he bought a car and paid in cash.
 We assume that the original value of that car is 100,000 CNY
 and it will scrap after 10 years.
 The residual value is still 1,000 CNY.
@@ -42,8 +43,7 @@ He can use this plugin like this:
 !!! example
 
     ```
-    option "insert_pythonpath" "True"
-    plugin "auto_depreciation"
+    plugin "auto_depreciation.depreciation"
 
     2020-03-01 commodity CARS
         name: "cars"
@@ -62,7 +62,7 @@ where we use metadata attached in the posting to pass residual value and useful 
 
 `residual_value` is optional and by default 0.
 
-???+ example
+!!! example
 
     ```
     2020-03-31 * "Example"
@@ -99,7 +99,7 @@ where we use metadata attached in the posting to pass residual value and useful 
 
 If the amount of fixed assets is greater than 1, all will be depreciated like this:
 
-???+ example
+!!! example
 
     ```
     2020-03-31 * "Example"

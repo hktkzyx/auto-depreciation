@@ -2,6 +2,7 @@
 test.py
 img/
 sample.beancount
+poetry.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
