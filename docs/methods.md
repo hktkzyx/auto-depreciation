@@ -39,20 +39,20 @@ where $y$ is the present value, $p$ is the original value, $q$ is the residual v
 
     ```
     2020-03-31 * ""
-        Assets:Cash                     -600.00 CNY                                   
+        Assets:Cash                     -600.00 CNY
         Assets:Wealth:Fixed-Assets        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
             useful_life: "3m"
             residual_value: 200
 
     2020-04-30 * "auto_depreciation:Nikon"
         Assets:Wealth:Fixed-Assets            -1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-        Assets:Wealth:Fixed-Assets             1 LENS {468 CNY, 2020-04-30, "Nikon"}   
-        Expenses:Property-Expenses:Depreciation  132 CNY                                   
+        Assets:Wealth:Fixed-Assets             1 LENS {468 CNY, 2020-04-30, "Nikon"}
+        Expenses:Property-Expenses:Depreciation  132 CNY
 
     2020-05-31 * "auto_depreciation:Nikon"
         Assets:Wealth:Fixed-Assets            -1 LENS {468 CNY, 2020-04-30, "Nikon"}
         Assets:Wealth:Fixed-Assets             1 LENS {332 CNY, 2020-05-31, "Nikon"}
-        Expenses:Property-Expenses:Depreciation  136 CNY                                
+        Expenses:Property-Expenses:Depreciation  136 CNY
 
     2020-06-30 * "auto_depreciation:Nikon"
         Assets:Wealth:Fixed-Assets            -1 LENS {332 CNY, 2020-05-31, "Nikon"}

@@ -31,7 +31,7 @@ def auto_depreciation(entries, options_map, config=None):
         A dict of options parsed from the file.
     config : str
         A string of plugin configuration.
-    
+
     Returns
     -------
     entries
@@ -111,7 +111,7 @@ def auto_depreciation(entries, options_map, config=None):
 
 def depreciation_list(start_value, end_value, buy_date, months, method):
     """Get depreciation values.
-    
+
     Parameters
     ----------
     start_value : Decimal
@@ -159,7 +159,7 @@ def depreciation_list(start_value, end_value, buy_date, months, method):
 
 def parabola(x, start_value, end_value, days):
     """Return present value by using parabola method.
-    
+
     Parameters
     ----------
     x : int
@@ -170,7 +170,7 @@ def parabola(x, start_value, end_value, days):
         Residual value.
     days : int
         Useful life in days.
-    
+
     Returns
     -------
     int
@@ -184,7 +184,7 @@ def parabola(x, start_value, end_value, days):
 
 def linear(x, start_value, end_value, days):
     """Return present value by using linear method.
-    
+
     Parameters
     ----------
     x : int
@@ -195,7 +195,7 @@ def linear(x, start_value, end_value, days):
         Residual value.
     days : int
         Useful life in days.
-    
+
     Returns
     -------
     int
@@ -208,7 +208,7 @@ def linear(x, start_value, end_value, days):
 
 def _posting_to_sell(pos):
     """Return a posting to sell fixed assets.
-    
+
     Parameters
     ----------
     pos
@@ -227,7 +227,7 @@ def _posting_to_sell(pos):
 
 def _posting_to_buy(pos, date, value):
     """Return a posting to buy fixed assets.
-    
+
     Parameters
     ----------
     pos
@@ -250,7 +250,7 @@ def _posting_to_buy(pos, date, value):
 
 def _posting_to_expense(pos, account, value, currency):
     """Return the expenses posting.
-    
+
     Parameters
     ----------
     pos
@@ -274,7 +274,7 @@ def _posting_to_expense(pos, account, value, currency):
 
 def _auto_entry(entry, date, label, *args):
     """Return the depreciation entry.
-    
+
     Parameters
     ----------
     entry

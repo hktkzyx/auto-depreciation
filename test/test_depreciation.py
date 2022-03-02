@@ -77,7 +77,7 @@ class TestExampleAutoDepreciation(cmptest.TestCase):
           Assets:Fixed-Assets            -1 LENS {207 CNY, 2020-04-30}
           Assets:Fixed-Assets             1 LENS {0 CNY, 2020-05-31}
           Expenses:Depreciation  207 CNY
-        
+
         2020-06-30 * "Test-auto_depreciation:Nikon"
           Assets:Fixed-Assets  -2 LENS {243 CNY, 2020-05-31, "Nikon"}
           Assets:Fixed-Assets   2 LENS {200 CNY, 2020-06-30, "Nikon"}

@@ -48,7 +48,7 @@ He can use this plugin like this:
     2020-03-01 commodity CARS
         name: "cars"
         assets-class: "fixed assets"
-    
+
     2020-03-31 * ""
         Assets:Cash                     -100000.00 CNY
         Assets:Wealth:Fixed-Assets           1 CARS {100000.00 CNY, "BMW"}
@@ -80,26 +80,26 @@ where we use metadata attached in the posting to pass residual value and useful 
 
     ```
     2020-03-31 * "Example"
-        Assets:Cash                     -600.00 CNY                                   
+        Assets:Cash                     -600.00 CNY
         Assets:Wealth:Fixed-Assets        1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
             useful_life: "3m"
             residual_value: 200
 
     2020-04-30 * "Example-auto_depreciation:Nikon"
         Assets:Wealth:Fixed-Assets              -1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-        Assets:Wealth:Fixed-Assets               1 LENS {380 CNY, 2020-04-30, "Nikon"}   
-        Expenses:Property-Expenses:Depreciation    220 CNY                                   
+        Assets:Wealth:Fixed-Assets               1 LENS {380 CNY, 2020-04-30, "Nikon"}
+        Expenses:Property-Expenses:Depreciation    220 CNY
 
     2020-05-31 * "Example-auto_depreciation:Nikon"
         Assets:Wealth:Fixed-Assets              -1 LENS {380 CNY, 2020-04-30, "Nikon"}
         Assets:Wealth:Fixed-Assets               1 LENS {243 CNY, 2020-05-31, "Nikon"}
-        Expenses:Property-Expenses:Depreciation    137 CNY                                
+        Expenses:Property-Expenses:Depreciation    137 CNY
 
     2020-06-30 * "Example-auto_depreciation:Nikon"
         Assets:Wealth:Fixed-Assets              -1 LENS {243 CNY, 2020-05-31, "Nikon"}
         Assets:Wealth:Fixed-Assets               1 LENS {200 CNY, 2020-06-30, "Nikon"}
         Expenses:Property-Expenses:Depreciation     43 CNY
-    ```                       
+    ```
 
 If the amount of fixed assets is greater than 1, all will be depreciated like this:
 
@@ -114,7 +114,7 @@ If the amount of fixed assets is greater than 1, all will be depreciated like th
 
     2020-04-30 * "Example-auto_depreciation:Nikon"
         Assets:Wealth:Fixed-Assets              -2 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-        Assets:Wealth:Fixed-Assets               2 LENS {380 CNY, 2020-04-30, "Nikon"}   
+        Assets:Wealth:Fixed-Assets               2 LENS {380 CNY, 2020-04-30, "Nikon"}
         Expenses:Property-Expenses:Depreciation    440 CNY
 
     ...
