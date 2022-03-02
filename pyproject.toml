@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "auto-depreciation"
-version = "2.1.0"
+version = "3.0.0"
 description = "Beancount plugin for fixed assets depreciation"
 authors = ["hktkzyx <hktkzyx@yeah.net>"]
 license = "GPL-3.0-or-later"
@@ -25,7 +25,7 @@ dev-tools = ["flake8", "yapf", "commitizen", "pre-commit", "isort"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "2.1.0"
+version = "3.0.0"
 version_files = ["pyproject.toml:version"]
 tag_format = "v$version"
 
