@@ -1,50 +1,59 @@
 [tool.poetry]
-name = "auto-depreciation"
-version = "3.0.0"
-description = "Beancount plugin for fixed assets depreciation"
 authors = ["hktkzyx <hktkzyx@yeah.net>"]
-license = "GPL-3.0-or-later"
-readme = "docs/README.md"
-homepage = "https://hktkzyx.github.io/auto-depreciation/"
-repository = "https://github.com/hktkzyx/auto-depreciation"
+description = "Beancount plugin for fixed assets depreciation"
 documentation = "https://hktkzyx.github.io/auto-depreciation/"
+homepage = "https://hktkzyx.github.io/auto-depreciation/"
 keywords = ["beancount", "plugin"]
-packages = [{ include = "auto_depreciation" }]
+license = "GPL-3.0-or-later"
+name = "auto-depreciation"
+readme = "docs/README.md"
+repository = "https://github.com/hktkzyx/auto-depreciation"
+version = "3.1.0"
 
 [tool.poetry.dependencies]
+beancount = "^2.3.5"
+mike = {version = "^1.1.2", optional = true}
+mkdocs = {version = "^1.2.3", optional = true}
+mkdocs-material = {version = "^8.2.1", optional = true}
+pytest = {version = "^7.1.2", optional = true}
+pytest-cov = {version = "^3.1.0", optional = true}
 python = "^3.9"
 python-dateutil = "^2.8.2"
-beancount = "^2.3.5"
-flake8 = { version = "^4.0.1", optional = true }
-yapf = { version = ">=0.32.0, <1.0.0", optional = true }
-commitizen = { version = "^2.21.2", optional = true }
-pre-commit = { version = "^2.17.0", optional = true }
-isort = { version = "^5.10.1", optional = true }
 
 [tool.poetry.dev-dependencies]
-mkdocs = "^1.2.3"
-mkdocs-material = "^8.2.1"
-mike = "^1.1.2"
+commitizen = "^2.21.2"
+flake8 = "^4.0.1"
+isort = "^5.10.1"
+pre-commit = "^2.17.0"
+yapf = {extras = ["pyproject"], version = ">=0.32.0, <1.0.0"}
 
 [tool.poetry.extras]
-dev-tools = ["flake8", "yapf", "commitizen", "pre-commit", "isort"]
+docs = ["mkdocs", "mkdocs-material", "mike"]
+test = ["pytest", "pytest-cov"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "3.0.0"
-version_files = ["pyproject.toml:version"]
 tag_format = "v$version"
+version = "3.1.0"
+version_files = ["pyproject.toml:version"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
 
 [tool.isort]
 profile = "google"
 
 [tool.yapf]
 based_on_style = "pep8"
-split_before_arithmetic_operator = true
-split_before_named_assigns = false
 indent_dictionary_value = true
 split_all_top_level_comma_separated_values = true
+split_before_arithmetic_operator = true
+split_before_named_assigns = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "auto_depreciation"]
+addopts = "--doctest-modules"
+
+[tool.coverage.run]
+source_pkgs = ["auto_depreciation"]

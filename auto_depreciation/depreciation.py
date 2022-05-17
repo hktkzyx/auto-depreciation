@@ -1,20 +1,158 @@
 from collections import namedtuple
+import datetime
 import re
+from typing import Optional
 
 from beancount import loader
 from beancount.core import account
 from beancount.core import amount
 from beancount.core import convert
 from beancount.core import data
-from beancount.core.number import Decimal
+from beancount.core import number
 from beancount.parser import printer
-from dateutil.relativedelta import relativedelta
+from dateutil import relativedelta
 
 __plugins__ = ['auto_depreciation']
 __author__ = 'hktkzyx <hktkzyx@qq.com>'
 
 AutoDepreciationError = namedtuple('AutoDepreciationError',
                                    'source message entry')
+
+
+def read_assets_account_from_config(config) -> str:
+    """Return assets account.
+
+    Parameters
+    ----------
+    config : str
+        A string of plugin configuration.
+
+    Returns
+    -------
+    account : str
+        An account.
+
+    Examples
+    --------
+    >>> read_assets_account_from_config("{'assets': 'Assets:Wealth'}")
+    'Assets:Wealth'
+    >>> read_assets_account_from_config(None)
+    'Assets:Wealth:Fixed-Assets'
+    >>> read_assets_account_from_config("{'assets': 'Assets-fafdWealth'}")
+    'Assets:Wealth:Fixed-Assets'
+    """
+    default_account = 'Assets:Wealth:Fixed-Assets'
+    try:
+        config_dict = eval(config)
+    except (TypeError, SyntaxError):
+        config_dict = {}
+    result_account = config_dict.get('assets', default_account)
+    if not account.is_valid(result_account):
+        result_account = default_account
+    return result_account
+
+
+def read_expenses_account_from_config(config) -> str:
+    """Return expenses account.
+
+    Parameters
+    ----------
+    config : str
+        A string of plugin configuration.
+
+    Returns
+    -------
+    account : str
+        An account.
+
+    Examples
+    --------
+    >>> read_expenses_account_from_config("{'expenses': 'Expenses:Depreciation'}")
+    'Expenses:Depreciation'
+    >>> read_expenses_account_from_config(None)
+    'Expenses:Property-Expenses:Depreciation'
+    >>> read_expenses_account_from_config("{'expenses': 'falsjfowfowe-fsdf!'}")
+    'Expenses:Property-Expenses:Depreciation'
+    """
+    default_account = 'Expenses:Property-Expenses:Depreciation'
+    try:
+        config_dict = eval(config)
+    except (TypeError, SyntaxError):
+        config_dict = {}
+    result_account = config_dict.get('expenses', default_account)
+    if not account.is_valid(result_account):
+        result_account = default_account
+    return result_account
+
+
+def read_depreciation_method_from_config(config) -> str:
+    """Return depreciation method.
+
+    Parameters
+    ----------
+    config : str
+        A string of plugin configuration.
+
+    Returns
+    -------
+    method : str
+        A method.
+
+    Examples
+    --------
+    >>> read_depreciation_method_from_config("{'method': 'linear'}")
+    'linear'
+    >>> read_depreciation_method_from_config(None)
+    'parabola'
+    """
+    try:
+        config_dict = eval(config)
+    except (TypeError, SyntaxError):
+        config_dict = {}
+    return config_dict.get('method', 'parabola')
+
+
+def parse_useful_life_in_months(posting: data.Posting) -> int:
+    """Return useful life in months.
+
+    Parameters
+    ----------
+    posting : data.Posting
+        A posting instance.
+
+    Returns
+    -------
+    months : int
+        Useful life in months.
+    """
+    matched = re.match(r'(\d+)([my])', str.lower(posting.meta['useful_life']))
+    months_or_years = matched[2]
+    value = int(matched[1])
+    return 12 * value if months_or_years == 'y' else value
+
+
+def parse_residual_value(posting: data.Posting) -> number.Decimal:
+    """Return the residual value.
+
+    Parameters
+    ----------
+    posting : data.Posting
+        A posting instance.
+
+    Returns
+    -------
+    residual_value : number.Decimal
+        Residual value.
+    """
+    value = posting.meta.get('residual_value', 0)
+    return number.D(round(value * 100)) / number.D(100)
+
+
+def is_posting_a_depreciation(posting: data.Posting,
+                              depreciation_assets_account: str) -> bool:
+    """Return whether the posting is a depreciation one."""
+    return (posting.meta and 'useful_life' in posting.meta
+            and posting.account == depreciation_assets_account)
 
 
 def auto_depreciation(entries, options_map, config=None):
@@ -31,7 +169,7 @@ def auto_depreciation(entries, options_map, config=None):
         A dict of options parsed from the file.
     config : str
         A string of plugin configuration.
-    
+
     Returns
     -------
     entries
@@ -40,86 +178,81 @@ def auto_depreciation(entries, options_map, config=None):
         Error information.
     """
     errors = []
-    DEFAULT_ASSETS_ACCOUNT = 'Assets:Wealth:Fixed-Assets'
-    DEFAULT_EXPENSES_ACCOUNT = 'Expenses:Property-Expenses:Depreciation'
-    DEFAULT_METHOD = 'parabola'
-    DEFAULT_RESIDUAL_VALUE = Decimal(0)
-    try:
-        config_dict = eval(config)
-    except (TypeError, SyntaxError):
-        config_dict = {}
-    try:
-        assets_account = config_dict['assets']
-    except KeyError:
-        assets_account = DEFAULT_ASSETS_ACCOUNT
-    if not account.is_valid(assets_account):
-        assets_account = DEFAULT_ASSETS_ACCOUNT
-    try:
-        expenses_account = config_dict['expenses']
-    except KeyError:
-        expenses_account = DEFAULT_EXPENSES_ACCOUNT
-    if not account.is_valid(expenses_account):
-        expenses_account = DEFAULT_EXPENSES_ACCOUNT
-    try:
-        method = config_dict['method']
-    except KeyError:
-        method = DEFAULT_METHOD
+    assets_account = read_assets_account_from_config(config)
+    expenses_account = read_expenses_account_from_config(config)
+    method = read_depreciation_method_from_config(config)
 
-    depreciation_entries = []
+    forecasted_entries = []
     for entry in entries:
         if isinstance(entry, data.Transaction):
-            for posting in entry.postings:
-                if (posting.meta and 'useful_life' in posting.meta
-                        and posting.account == assets_account):
-                    cost = posting.cost
-                    currency = cost.currency
-                    original_value = cost.number
-                    try:
-                        end_value = posting.meta['residual_value']
-                    except KeyError:
-                        end_value = DEFAULT_RESIDUAL_VALUE
-                    label = cost.label
-                    buy_date = cost.date
-                    m = re.match(r'([0-9]+)([my])',
-                                 str.lower(posting.meta['useful_life']))
-                    months_or_years = m.group(2)
-                    months = int(m.group(1))
-                    if months_or_years == 'y':
-                        months = 12 * months
-                    (dates_list, current_values,
-                     depreciation_values) = depreciation_list(
-                         original_value, end_value, buy_date, months, method)
-                    latest_pos = posting
-                    for i, date in enumerate(dates_list):
-                        pos_sell = _posting_to_sell(latest_pos)
-                        pos_buy = _posting_to_buy(latest_pos,
-                                                  date,
-                                                  current_values[i])
-                        pos_expense = _posting_to_expense(
-                            latest_pos,
-                            expenses_account,
-                            depreciation_values[i],
-                            currency)
-                        latest_pos = pos_buy
-                        new_pos = [pos_sell, pos_buy, pos_expense]
-                        depreciation_entries.append(
-                            _auto_entry(entry, date, label, *new_pos))
-    new_entries = entries + depreciation_entries
-    new_entries.sort(key=data.entry_sortkey)
-    return new_entries, errors
+            forecasted_entries = forecasted_entries + create_forecasted_depreciation_entries(
+                entry, assets_account, expenses_account, method)
+    result_entries = entries + forecasted_entries
+    result_entries.sort(key=data.entry_sortkey)
+    return result_entries, errors
 
 
-def depreciation_list(start_value, end_value, buy_date, months, method):
-    """Get depreciation values.
-    
+def create_forecasted_depreciation_entries(
+        entry: data.Transaction,
+        assets_account: str,
+        expenses_account: str,
+        method: str) -> list[data.Transaction]:
+    """Return forecasted depreciation entries.
+
     Parameters
     ----------
-    start_value : Decimal
-        Original value.
-    end_value : Decimal
-        residual value.
-    buy_date : datetime.date
-        The date you buy the assets.
+    entry : data.Transaction
+        A Transaction entry instance.
+    assets_account : str
+        The assets account.
+    expenses_account : str
+        The expenses account.
+    method : str
+        The depreciation method.
+
+    Returns
+    -------
+    depreciation_entries : list of data.Transaction
+        The forecasted depreciation transaction entries.
+    """
+    if not isinstance(entry, data.Transaction):
+        raise TypeError("'entry' must be a transaction.")
+    entries = []
+    for posting in entry.postings:
+        if is_posting_a_depreciation(posting, assets_account):
+            months = parse_useful_life_in_months(posting)
+            (dates, current_values,
+             depreciation_values) = cal_forecasted_depreciation_info(
+                 posting, months, method)
+            latest_posting = posting
+            for (date, present_value,
+                 depreciation_value) in zip(dates,
+                                            current_values,
+                                            depreciation_values):
+                sell_posting = create_forecasted_sell_posting(latest_posting)
+                buy_posting = create_forecasted_buy_posting(
+                    latest_posting, date, present_value)
+                expense_posting = create_depreciation_expense_posting(
+                    latest_posting, expenses_account, depreciation_value)
+                latest_posting = buy_posting
+                entries.append(
+                    create_depreciation_entry(
+                        entry,
+                        date,
+                        posting.cost.label,
+                        [sell_posting, buy_posting, expense_posting]))
+    return entries
+
+
+def cal_forecasted_depreciation_info(
+    posting: data.Posting, months: int, method: str
+) -> tuple[list[datetime.date], list[number.Decimal], list[number.Decimal]]:
+    """Get depreciation values.
+
+    Parameters
+    ----------
+    posting : data.Posting
+        The depreciation posting.
     months : int
         Useful life in months.
     method : str
@@ -127,154 +260,181 @@ def depreciation_list(start_value, end_value, buy_date, months, method):
 
     Returns
     -------
-    dates_list : List[datetime.date]
-        Forcasted depreciation dates.
-    current_values : List[float]
-        Present values at corresponging dates in `dates_list`.
-    depreciation_values : List[float]
-        Depreciation values at corresponging dates in `dates_list`.
+    forecasted_dates : list of datetime.date
+        Forecasted depreciation dates.
+    rounded_current_values : list of Decimal
+        Present values at corresponding `forecasted_dates`.
+    depreciation_values : list of Decimal
+        Depreciation values at corresponding `forecasted_dates`.
     """
     methods = {
-        'parabola': parabola,
-        'linear': linear,
+        'parabola': cal_present_value_by_parabola,
+        'linear': cal_present_value_by_linear,
     }
-    get_current_value = methods[method]
-    dates_list = [
-        buy_date + relativedelta(months=x) for x in range(1, months + 1)
+    cal_current_values = methods[method]
+    forecasted_dates = [
+        posting.cost.date + relativedelta.relativedelta(months=month)
+        for month in range(1, months + 1)
     ]
-    days_list = [(x - buy_date).days for x in dates_list]
-    depreciation_days = days_list[-1]
+    days = [(x - posting.cost.date).days for x in forecasted_dates]
     current_values = [
-        get_current_value(x,
-                          float(start_value),
-                          float(end_value),
-                          depreciation_days) for x in days_list
+        cal_current_values(day,
+                           posting.cost.number,
+                           parse_residual_value(posting),
+                           days[-1]) for day in days
+    ]
+    rounded_current_values = [
+        number.D(round(float(value) * 100)) / number.D(100)
+        for value in current_values
     ]
     depreciation_values = []
-    for i, value in enumerate(current_values):
-        previous_value = current_values[i - 1] if not i == 0 else start_value
+    for i, value in enumerate(rounded_current_values):
+        previous_value = (rounded_current_values[i - 1]
+                          if i != 0 else posting.cost.number)
         depreciation_values.append(previous_value - value)
-    return dates_list, current_values, depreciation_values
+    return forecasted_dates, rounded_current_values, depreciation_values
 
 
-def parabola(x, start_value, end_value, days):
+def cal_present_value_by_parabola(day: int,
+                                  start_value: number.Decimal,
+                                  end_value: number.Decimal,
+                                  days: int) -> number.Decimal:
     """Return present value by using parabola method.
-    
+
     Parameters
     ----------
-    x : int
+    day : int
         Days after buying the assets.
-    start_value : float
+    start_value : number.Decimal
         Original value.
-    end_value : float
+    end_value : number.Decimal
         Residual value.
     days : int
         Useful life in days.
-    
+
     Returns
     -------
-    int
+    number.Decimal
         Present value after buying `x` days.
     """
     a = (start_value - end_value) / days**2
     b = -2 * (start_value - end_value) / days
     c = start_value
-    return round(a * x**2 + b * x + c)
+    return a * day**2 + b * day + c
 
 
-def linear(x, start_value, end_value, days):
+def cal_present_value_by_linear(day: int,
+                                start_value: number.Decimal,
+                                end_value: number.Decimal,
+                                days: int) -> number.Decimal:
     """Return present value by using linear method.
-    
+
     Parameters
     ----------
-    x : int
+    day : int
         Days after buying the assets.
-    start_value : float
+    start_value : number.Decimal
         Original value.
-    end_value : float
+    end_value : number.Decimal
         Residual value.
     days : int
         Useful life in days.
-    
+
     Returns
     -------
-    int
+    number.Decimal
         Present value after buying `x` days.
     """
     k = -(start_value - end_value) / days
     b = start_value
-    return round(k * x + b)
+    return k * day + b
 
 
-def _posting_to_sell(pos):
+def create_forecasted_sell_posting(posting: data.Posting) -> data.Posting:
     """Return a posting to sell fixed assets.
-    
+
     Parameters
     ----------
-    pos
+    posting : data.Posting
         A instance of posting.
+
+    Returns
+    -------
+    posting : data.Posting
+        A instance of sell posting.
     """
-    units = convert.get_units(pos)
-    new_units = amount.mul(units, Decimal(-1))
-    new_meta = pos.meta.copy()
-    try:
-        del new_meta['useful_life']
-        del new_meta['residual_value']
-    except KeyError:
-        pass
-    return pos._replace(units=new_units, meta=new_meta)
+    units = amount.mul(convert.get_units(posting), number.Decimal(-1))
+    meta = posting.meta.copy()
+    if 'useful_life' in meta:
+        del meta['useful_life']
+    if 'residual_value' in meta:
+        del meta['residual_value']
+    return posting._replace(units=units, meta=meta)
 
 
-def _posting_to_buy(pos, date, value):
+def create_forecasted_buy_posting(
+        posting: data.Posting, date: datetime.date,
+        present_value: number.Decimal) -> data.Posting:
     """Return a posting to buy fixed assets.
-    
+
     Parameters
     ----------
-    pos
+    posting : data.Posting
         The posting to be sold.
     date : datetime.date
         Transaction date.
-    value : float
-        Cost value.
+    present_value : number.Decimal
+        Present value of the fixed assets.
+
+    Returns
+    -------
+    posting : data.Posting
+        A instance of buy posting.
     """
-    cost = pos.cost
-    new_cost = cost._replace(date=date, number=Decimal(value))
-    new_meta = pos.meta.copy()
-    try:
-        del new_meta['useful_life']
-        del new_meta['residual_value']
-    except KeyError:
-        pass
-    return pos._replace(cost=new_cost, meta=new_meta)
+    cost = posting.cost._replace(date=date, number=present_value)
+    meta = posting.meta.copy()
+    if 'useful_life' in meta:
+        del meta['useful_life']
+    if 'residual_value' in meta:
+        del meta['residual_value']
+    return posting._replace(cost=cost, meta=meta)
 
 
-def _posting_to_expense(pos, account, value, currency):
+def create_depreciation_expense_posting(posting: data.Posting,
+                                        account: str,
+                                        depreciation_value: number.Decimal):
     """Return the expenses posting.
-    
+
     Parameters
     ----------
-    pos
+    posting : data.Posting
         Posting to be sold.
     account : str
         Expenses account name.
-    value : float
+    depreciation_value : number.Decimal
         Depreciation value.
-    currency : str
-        Depreciation currency.
+
+    Returns
+    -------
+    posting : data.Posting
+        A instance of expense posting.
     """
-    units = amount.Amount(pos.units.number * Decimal(value), currency)
-    new_meta = pos.meta.copy()
-    try:
-        del new_meta['useful_life']
-        del new_meta['residual_value']
-    except KeyError:
-        pass
-    return pos._replace(account=account, units=units, cost=None, meta=new_meta)
+    units = amount.Amount(posting.units.number * depreciation_value,
+                          posting.cost.currency)
+    meta = posting.meta.copy()
+    if 'useful_life' in meta:
+        del meta['useful_life']
+    if 'residual_value' in meta:
+        del meta['residual_value']
+    return posting._replace(account=account, units=units, cost=None, meta=meta)
 
 
-def _auto_entry(entry, date, label, *args):
+def create_depreciation_entry(entry,
+                              date: datetime.date,
+                              label: Optional[str],
+                              postings: list[data.Posting]):
     """Return the depreciation entry.
-    
+
     Parameters
     ----------
     entry
@@ -283,25 +443,27 @@ def _auto_entry(entry, date, label, *args):
         Transaction date.
     label : str, None
         Label in inventory.
-    *args
+    postings : list of data.Posting
         Posting instances in this entry.
+
+    Returns
+    -------
+    entry
+        The depreciation entry.
     """
-    narration = entry.narration
-    if narration and label:
-        new_narration = ''.join(
-            [entry.narration, '-auto_depreciation:', label])
-    elif narration:
-        new_narration = entry.narration + '-auto_depreciation'
+    if entry.narration and label:
+        narration = f'{entry.narration}-auto_depreciation:{label}'
+    elif entry.narration:
+        narration = f'{entry.narration}-auto_depreciation'
     elif label:
-        new_narration = 'auto_depreciation:' + label
+        narration = f'auto_depreciation:{label}'
     else:
-        new_narration = 'auto_depreciation'
-    return entry._replace(date=date,
-                          narration=new_narration,
-                          postings=list(args))
+        narration = 'auto_depreciation'
+    return entry._replace(date=date, narration=narration, postings=postings)
 
 
 if __name__ == "__main__":
     filename = 'sample.beancount'
     entries, errors, options = loader.load_file(filename)
     printer.print_entries(entries)
+    printer.print_errors(errors)

@@ -13,7 +13,7 @@ repo_url: https://github.com/hktkzyx/auto-depreciation
 nav:
   - Home: README.md
   - Depreciation Methods: methods.md
-theme: 
+theme:
   name: material
   language: en
   features:
@@ -35,8 +35,8 @@ extra:
       link: https://github.com/hktkzyx
     - icon: material/email
       link: mailto:<hktkzyx@yeah.net>
-    
-  
+
+
 # Extensions
 markdown_extensions:
   - abbr
@@ -61,7 +61,7 @@ markdown_extensions:
       repo: electronic-dices-stc-firmware
   - pymdownx.snippets
   - pymdownx.superfences
- 
+
 # MathJax
 extra_javascript:
   - javascripts/mathjax.js
