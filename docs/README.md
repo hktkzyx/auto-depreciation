@@ -7,6 +7,13 @@ All these transactions are preferred to be documented as transfer instead of exp
 otherwise, you cannot evaluate your daily expenses properly.
 This plugin can generate depreciation transactions automatically.
 
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/hktkzyx/auto-depreciation/build-and-test)](https://github.com/hktkzyx/auto-depreciation/actions)
+[![Codecov](https://img.shields.io/codecov/c/github/hktkzyx/auto-depreciation)](https://app.codecov.io/gh/hktkzyx/auto-depreciation)
+[![PyPI](https://img.shields.io/pypi/v/auto-depreciation)](https://pypi.org/project/auto-depreciation/)
+[![PyPI - License](https://img.shields.io/pypi/l/auto-depreciation)](https://github.com/hktkzyx/auto-depreciation/blob/master/LICENSE)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/auto-depreciation)](https://pypi.org/project/auto-depreciation/)
+[![GitHub last commit](https://img.shields.io/github/last-commit/hktkzyx/auto-depreciation)](https://github.com/hktkzyx/auto-depreciation)
+
 ## Installing
 
 ```bash
