@@ -1,6 +1,6 @@
 # Auto Depreciation Plugin
 
-[Auto_depreciation](https://hktkzyx.github.io/auto-depreciation/)
+[Auto depreciation](https://hktkzyx.github.io/auto-depreciation/)
 is a [beancount](https://github.com/beancount/beancount) plugin to deal with fixed assets depreciation.
 In our daily life, we may buy some valuable goods like cars, phones, furniture, etc.
 All these transactions are preferred to be documented as transfer instead of expenses,
@@ -64,7 +64,7 @@ where we use metadata attached in the posting to pass residual value and useful 
 
 !!! note
 
-    `residual_value` is rounded to `int`.
+    `residual_value` is rounded to 2 decimal places.
 
 !!! example
 
@@ -87,18 +87,18 @@ where we use metadata attached in the posting to pass residual value and useful 
 
     2020-04-30 * "Example-auto_depreciation:Nikon"
         Assets:Wealth:Fixed-Assets              -1 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-        Assets:Wealth:Fixed-Assets               1 LENS {380 CNY, 2020-04-30, "Nikon"}
-        Expenses:Property-Expenses:Depreciation    220 CNY
+        Assets:Wealth:Fixed-Assets               1 LENS {379.74 CNY, 2020-04-30, "Nikon"}
+        Expenses:Property-Expenses:Depreciation    220.26 CNY
 
     2020-05-31 * "Example-auto_depreciation:Nikon"
-        Assets:Wealth:Fixed-Assets              -1 LENS {380 CNY, 2020-04-30, "Nikon"}
-        Assets:Wealth:Fixed-Assets               1 LENS {243 CNY, 2020-05-31, "Nikon"}
-        Expenses:Property-Expenses:Depreciation    137 CNY
+        Assets:Wealth:Fixed-Assets              -1 LENS {379.74 CNY, 2020-04-30, "Nikon"}
+        Assets:Wealth:Fixed-Assets               1 LENS {243.47 CNY, 2020-05-31, "Nikon"}
+        Expenses:Property-Expenses:Depreciation    136.27 CNY
 
     2020-06-30 * "Example-auto_depreciation:Nikon"
-        Assets:Wealth:Fixed-Assets              -1 LENS {243 CNY, 2020-05-31, "Nikon"}
+        Assets:Wealth:Fixed-Assets              -1 LENS {243.47 CNY, 2020-05-31, "Nikon"}
         Assets:Wealth:Fixed-Assets               1 LENS {200 CNY, 2020-06-30, "Nikon"}
-        Expenses:Property-Expenses:Depreciation     43 CNY
+        Expenses:Property-Expenses:Depreciation     43.47 CNY
     ```
 
 If the amount of fixed assets is greater than 1, all will be depreciated like this:
@@ -114,8 +114,8 @@ If the amount of fixed assets is greater than 1, all will be depreciated like th
 
     2020-04-30 * "Example-auto_depreciation:Nikon"
         Assets:Wealth:Fixed-Assets              -2 LENS {600.00 CNY, 2020-03-31, "Nikon"}
-        Assets:Wealth:Fixed-Assets               2 LENS {380 CNY, 2020-04-30, "Nikon"}
-        Expenses:Property-Expenses:Depreciation    440 CNY
+        Assets:Wealth:Fixed-Assets               2 LENS {379.74 CNY, 2020-04-30, "Nikon"}
+        Expenses:Property-Expenses:Depreciation    440.52 CNY
 
     ...
     ```
