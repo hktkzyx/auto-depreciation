@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ["3.9", "3.10"]
     defaults:
       run:
@@ -31,8 +31,7 @@ jobs:
         uses: snok/install-poetry@v1
       - name: Install dependencies
         run: |
-          poetry install
-          poetry install -E test
+          poetry install --no-dev -E test
       - name: Build with poetry
         run: poetry build
       - name: Test with pytest
