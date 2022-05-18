@@ -1,5 +1,5 @@
 [tool.poetry]
-authors = ["hktkzyx <hktkzyx@yeah.net>"]
+authors = ["Brooks YUAN <hktkzyx@yeah.net>"]
 description = "Beancount plugin for fixed assets depreciation"
 documentation = "https://hktkzyx.github.io/auto-depreciation/"
 homepage = "https://hktkzyx.github.io/auto-depreciation/"
