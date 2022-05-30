@@ -13,6 +13,7 @@ repo_url: https://github.com/hktkzyx/auto-depreciation
 nav:
   - Home: README.md
   - Depreciation Methods: methods.md
+  - Contributing: CONTRIBUTING.md
 theme:
   name: material
   language: en
