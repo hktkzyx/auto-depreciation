@@ -1,8 +1,8 @@
 # Project information
 site_name: Auto Depreciation Plugin
 site_description: A Beancount plugin for fixed assets depreciation
-site_author: hktkzyx
-copyright: Copyright &copy; 2020 hktkzyx.
+site_author: Brooks YUAN
+copyright: Copyright &copy; 2020 Brooks YUAN.
   Content on this site is licensed under CC BY 4.0.
 
 # Repository
@@ -13,6 +13,7 @@ repo_url: https://github.com/hktkzyx/auto-depreciation
 nav:
   - Home: README.md
   - Depreciation Methods: methods.md
+  - Contributing: CONTRIBUTING.md
 theme:
   name: material
   language: en

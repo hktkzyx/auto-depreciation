@@ -2,6 +2,7 @@ from collections import namedtuple
 import datetime
 import re
 from typing import Optional
+import ast
 
 from beancount import loader
 from beancount.core import account
@@ -43,8 +44,8 @@ def read_assets_account_from_config(config) -> str:
     """
     default_account = 'Assets:Wealth:Fixed-Assets'
     try:
-        config_dict = eval(config)
-    except (TypeError, SyntaxError):
+        config_dict = ast.literal_eval(config)
+    except (TypeError, SyntaxError, ValueError):
         config_dict = {}
     result_account = config_dict.get('assets', default_account)
     if not account.is_valid(result_account):
@@ -76,8 +77,8 @@ def read_expenses_account_from_config(config) -> str:
     """
     default_account = 'Expenses:Property-Expenses:Depreciation'
     try:
-        config_dict = eval(config)
-    except (TypeError, SyntaxError):
+        config_dict = ast.literal_eval(config)
+    except (TypeError, SyntaxError, ValueError):
         config_dict = {}
     result_account = config_dict.get('expenses', default_account)
     if not account.is_valid(result_account):
@@ -106,8 +107,8 @@ def read_depreciation_method_from_config(config) -> str:
     'parabola'
     """
     try:
-        config_dict = eval(config)
-    except (TypeError, SyntaxError):
+        config_dict = ast.literal_eval(config)
+    except (TypeError, SyntaxError, ValueError):
         config_dict = {}
     return config_dict.get('method', 'parabola')
 

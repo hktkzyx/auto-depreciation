@@ -1,5 +1,5 @@
 [tool.poetry]
-authors = ["hktkzyx <hktkzyx@yeah.net>"]
+authors = ["Brooks YUAN <hktkzyx@yeah.net>"]
 description = "Beancount plugin for fixed assets depreciation"
 documentation = "https://hktkzyx.github.io/auto-depreciation/"
 homepage = "https://hktkzyx.github.io/auto-depreciation/"
@@ -8,7 +8,7 @@ license = "GPL-3.0-or-later"
 name = "auto-depreciation"
 readme = "docs/README.md"
 repository = "https://github.com/hktkzyx/auto-depreciation"
-version = "3.1.0"
+version = "3.1.1"
 
 [tool.poetry.dependencies]
 beancount = "^2.3.5"
@@ -34,7 +34,7 @@ test = ["pytest", "pytest-cov"]
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "v$version"
-version = "3.1.0"
+version = "3.1.1"
 version_files = ["pyproject.toml:version"]
 
 [build-system]
