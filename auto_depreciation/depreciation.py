@@ -1,8 +1,8 @@
+import ast
 from collections import namedtuple
 import datetime
 import re
 from typing import Optional
-import ast
 
 from beancount import loader
 from beancount.core import account
